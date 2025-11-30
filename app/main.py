@@ -11,20 +11,13 @@ from routes.routes_pedido import router as pedidos_router
 from routes.routes_detalle_carrito import router as detalles_carrito_router
 # from routes.routes_detalle_pedido import router as detalles_pedido_router
 from routes.routes_envio import router as envio_router
+from routes.routes_productos import router as productos_router
+
 
 app = FastAPI()
 
 origins = ['*']
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-app.add_middleware(GZipMiddleware, minimum_size=1000, compresslevel=5)
 
 
 
@@ -37,7 +30,7 @@ app.include_router(pedidos_router, prefix='/api', tags=["Orders"])
 app.include_router(detalles_carrito_router, prefix='/api', tags=["Carts"])
 # app.include_router(detalles_pedido_router,prefix='/api', tags=["Detalles Pedido"])
 app.include_router(envio_router,prefix='/api', tags=["Shippings"])
-
+app.include_router(productos_router,prefix='/api',tags=["Products"])
 
 
 # url_conection = 'mysql+pymysql://root:123@localhost:3306/pruebas'

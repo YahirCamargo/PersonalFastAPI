@@ -11,10 +11,9 @@ class DetalleCarritoBase(BaseModel):
 class DetalleCarritoActualizar(BaseModel):
     cantidad:Optional[int]
     precio:Optional[Decimal]=Field(None,decimal_places=2,le=Decimal("99999.99"))
-    productos_id: Optional[int] = None
 
 class DetalleCarritoResponder(DetalleCarritoBase):
-    id:str
+    id:int
 
     class Config:
         from_attributes=True

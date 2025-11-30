@@ -18,7 +18,7 @@ class UsuarioLogin(BaseModel):
     contrasena:str
 
 class UsuarioResponder(UsuarioBase):
-    id:str
+    id:int
     rol:str
 
     class Config:

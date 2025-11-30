@@ -1,16 +1,37 @@
 from fastapi import APIRouter, Depends, HTTPException
+from datetime import datetime
 from sqlalchemy.orm import Session
 from db.database import SessionLocal
+from pydantic_settings import BaseSettings
 from models.models_usuarios import Usuario
 from schemas.schema_usuario import UsuarioCrear, UsuarioResponder,UsuarioLogin
-from core.seguridad import hashear_contraseña, verificar_contraseña, crear_token_acceso, CREDENTIALS_EXCEPTION
+from core.seguridad import hashear_contraseña, verificar_contraseña, crear_token_acceso,crear_refresh_token, CREDENTIALS_EXCEPTION
 from fastapi.security import OAuth2PasswordRequestForm
+from models.models_refresh_tokens import RefreshToken
+from schemas.schema_autenticacion import TokenRefreshRequest, TokenPair
 from starlette import status
 
 from dependencies.dependencies_autenticacion import get_current_user
 
 
 router = APIRouter(prefix="/auth",tags=["Auth"])
+
+class Settings(BaseSettings):
+    mysql_user: str
+    mysql_password: str
+    mysql_host: str
+    mysql_port: str
+    mysql_db: str
+
+    secret_key: str
+    algorithm: str
+    refresh_token_expire_days:int
+    access_token_expire_minutes: int
+
+    class Config:
+        env_file = ".env"
+
+settings = Settings()
 
 
 def get_db():
@@ -19,6 +40,52 @@ def get_db():
         yield db
     finally:
         db.close()
+
+@router.post('/refresh-token', response_model=TokenPair)
+def refresh_token(data: TokenRefreshRequest,db: Session = Depends(get_db)):
+    token_antiguo = db.query(RefreshToken).filter(RefreshToken.token == data.refresh_token).first()
+
+    if not token_antiguo:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, 
+            detail="Token de refresh inválido o no existe."
+        )
+
+    if token_antiguo.usado:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, 
+            detail="Token ya utilizado. Acceso denegado por seguridad."
+        )
+
+    if token_antiguo.expira_en < datetime.utcnow():
+        db.delete(token_antiguo)
+        db.commit()
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, 
+            detail="Sesión expirada. Por favor, inicie sesión nuevamente."
+        )
+
+    user_id = token_antiguo.usuarios_id
+    user_actual = db.query(Usuario).filter(Usuario.id == user_id).first()
+
+    token_antiguo.usado = True
+    db.add(token_antiguo)
+
+    nuevo_access_token = crear_token_acceso({
+        "sub": user_actual.email,
+        "rol": user_actual.rol,
+        "user_id": user_actual.id
+    })
+    nuevo_refresh_token_str = crear_refresh_token(db, user_id)
+    
+    db.commit()
+
+    return {
+        "access_token": nuevo_access_token,
+        "token_type": "bearer",
+        "refresh_token": nuevo_refresh_token_str,
+        "expires_in": settings.access_token_expire_minutes * 60
+    }
 
 @router.post('/register', response_model=UsuarioResponder,status_code=status.HTTP_201_CREATED)
 def registrar(user: UsuarioCrear, db:Session=Depends(get_db)):
@@ -51,8 +118,15 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
             headers={"WWW-Authenticate": "Bearer"},
         )
     
-    token = crear_token_acceso({"sub": user.email,"user_id": user.id,"rol": user.rol})
-    return {"access_token": token, "token_type": "bearer"}
+    access_token = crear_token_acceso({"sub": user.email,"user_id": user.id,"rol": user.rol})
+    refresh_token = crear_refresh_token(db,user.id)
+    db.commit()
+    return {
+        "access_token": access_token, 
+        "token_type": "bearer",
+        "refresh_token": refresh_token,
+        "expires_in": settings.access_token_expire_minutes * 60
+    }
 
 @router.get('/perfil', response_model=UsuarioResponder)
 def obtener_mi_perfil(current_user: Usuario = Depends(get_current_user)):

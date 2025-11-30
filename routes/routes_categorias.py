@@ -35,7 +35,7 @@ def actualizar_categoria(categoria_id:str,categoria_actualizada:CategoriaBase,db
     return categoria_a_actualizar
 
 @router.delete('/{categoria_id}',response_model=CategoriaResponder)
-def borrar_categoria(categoria_id:int,db:Session=Depends(get_db)):
+def borrar_categoria(categoria_id:str,db:Session=Depends(get_db)):
     categoria_a_borrar = delete_categoria(db,categoria_id)
     if not categoria_a_borrar:
         raise HTTPException(status_code=404,detail="Categoria no encontrada")

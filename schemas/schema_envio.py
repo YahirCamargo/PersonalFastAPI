@@ -14,7 +14,7 @@ class EnvioActualizar(BaseModel):
     numero_seguimiento : Optional[str]=Field(None,max_length=20)
 
 class EnviosResponder(EnvioBase):
-    id : str
+    id : int
     fecha : datetime
     
     class Config:

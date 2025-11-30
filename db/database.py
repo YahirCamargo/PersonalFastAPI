@@ -12,6 +12,7 @@ class Settings(BaseSettings):
 
     secret_key: str
     algorithm: str
+    refresh_token_expire_days:int
     access_token_expire_minutes: int
 
     class Config:

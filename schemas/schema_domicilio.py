@@ -20,7 +20,7 @@ class DomicilioActualizar(BaseModel):
     preferido: Optional[bool] = None
 
 class DomicilioResponder(DomicilioBase):
-    id:str
+    id:int
 
     class Config():
         from_attributes=True

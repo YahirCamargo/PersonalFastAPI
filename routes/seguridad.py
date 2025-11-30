@@ -15,12 +15,6 @@ CREDENTIALS_EXCEPTION = HTTPException(
 )
 
 class Settings(BaseSettings):
-    mysql_user: str
-    mysql_password: str
-    mysql_host: str
-    mysql_port: str
-    mysql_db: str
-
     secret_key: str
     algorithm: str
     refresh_token_expire_days:int

@@ -6,7 +6,7 @@ class Domicilios(Base):
     __tablename__ = "domicilios"
     id = Column(SMALLINT(unsigned=True), nullable=False, autoincrement=True, primary_key=True)
     calle = Column(String(45), nullable=False)
-    numero = Column(String(10), nullable=False) #Ej: 123A, S/N, 456-B
+    numero = Column(String(10), nullable=False) #Ej 123A, S/N, 456-B
     colonia = Column(String(30), nullable=False)
     cp = Column(CHAR(5), nullable=False)
     estado = Column(String(20), nullable=False)

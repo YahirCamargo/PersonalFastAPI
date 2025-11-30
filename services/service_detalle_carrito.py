@@ -6,7 +6,7 @@ from schemas.schema_detalle_carrito import DetalleCarritoBase,DetalleCarritoActu
 def get_detalle_carrito(db:Session,user_id:str) -> List[DetalleCarrito]:
     return db.query(DetalleCarrito).filter(DetalleCarrito.usuarios_id == user_id).all()
 
-def get_detalle_carrito_por_id(db:Session,detalle_carrito_id,user_id:str):
+def get_detalle_carrito_por_id(db:Session,detalle_carrito_id:int,user_id:str):
     detalle_carrito = db.query(DetalleCarrito).filter(DetalleCarrito.usuarios_id == user_id,DetalleCarrito.id == detalle_carrito_id).first()
     if not detalle_carrito:
         return None

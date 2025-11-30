@@ -7,7 +7,7 @@ class PedidoBase(BaseModel):
     numero:str=Field(max_length=36)
     importe_productos:Decimal=Field(...,decimal_places=2,le=Decimal("99999999.99"))
     importe_envio:Decimal=Field(...,decimal_places=2,le=Decimal("9999.99"))
-    metodos_pago_id:str
+    metodos_pago_id:int
     fecha_hora_pago:datetime | None
 
     class Config:
@@ -21,7 +21,7 @@ class PedidoActualizar(BaseModel):
     importe_productos:Optional[Decimal]
     importe_envio:Optional[Decimal]
     fecha_hora_pago:Optional[datetime] | Optional[None]
-    metodos_pago_id: Optional[str] = None
+    metodos_pago_id: Optional[int] = None
     fecha_hora_pago: Optional[datetime] = None
     
 
@@ -32,11 +32,11 @@ class PedidoActualizar(BaseModel):
         }
 
 class PedidoCheckout(BaseModel):
-    metodos_pago_id: str
-    domicilios_id: str
+    metodos_pago_id: int
+    domicilios_id: int
 
 class PedidoResponder(PedidoBase):
-    id:str
+    id:int
     
     class Config:
         from_attributes=True
