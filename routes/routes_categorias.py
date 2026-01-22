@@ -22,21 +22,12 @@ def obtener_categoria(db:Session=Depends(get_db)):
 
 @router.post('/',response_model=CategoriaResponder,status_code=status.HTTP_201_CREATED)
 def crear_categoria(categoria:CategoriaBase,db:Session=Depends(get_db)):
-    categoria_a_crear = post_categoria(db,categoria)
-    if not categoria_a_crear:
-        raise HTTPException(status_code=400,detail="Categoria ya existente")
-    return categoria_a_crear
+    return post_categoria(db,categoria)
 
 @router.put('/{categoria_id}',response_model=CategoriaResponder)
-def actualizar_categoria(categoria_id:str,categoria_actualizada:CategoriaBase,db:Session=Depends(get_db)):
-    categoria_a_actualizar = put_categoria(db,categoria_id,categoria_actualizada)
-    if not categoria_a_actualizar:
-        raise HTTPException(status_code=404,detail="Categoria no encontrada")
-    return categoria_a_actualizar
+def actualizar_categoria(categoria_id:str,categoria_actualizada:CategoriaBase,db:Session=Depends(get_db)): 
+    return put_categoria(db,categoria_id,categoria_actualizada)
 
 @router.delete('/{categoria_id}',response_model=CategoriaResponder)
 def borrar_categoria(categoria_id:str,db:Session=Depends(get_db)):
-    categoria_a_borrar = delete_categoria(db,categoria_id)
-    if not categoria_a_borrar:
-        raise HTTPException(status_code=404,detail="Categoria no encontrada")
-    return categoria_a_borrar
+    return delete_categoria(db,categoria_id)

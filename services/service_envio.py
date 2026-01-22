@@ -3,28 +3,31 @@ from models.models_envios import Envio
 from models.models_domicilios import Domicilios
 from models.models_pedidos import Pedido
 from schemas.schema_envio import EnvioBase,EnvioActualizar
+from exceptions.exceptions_envios import EnvioExistenteException,EnvioNoExistenteException
 from typing import List
 
 def get_envio(db:Session,user_id:str) -> List[Envio]:
     envios =  db.query(Envio).join(
         Pedido, 
-        Envio.pedidos_id == Pedido.id 
+        Envio.pedidos_id == Pedido.id
     ).filter(
-        Pedido.usuarios_id == user_id
+        Pedido.usuarios_id == user_id,
+        Envio.activo == True
     ).all()
     return envios
 
-def get_envio_por_id(db:Session,envio_id:int,user_id:str):
+def get_envio_por_id(db:Session,envio_id:str,user_id:str):
     envio = db.query(Envio).join(
         Pedido,
         Envio.pedidos_id == Pedido.id
     ).filter(
         Pedido.usuarios_id == user_id,
-        Envio.id == envio_id
+        Envio.id == envio_id,
+        Envio.activo == True
     ).first()
 
     if not envio:
-        raise None
+        raise EnvioNoExistenteException()
     return envio
 
 
@@ -33,7 +36,7 @@ def post_envio(db:Session,envio:EnvioBase,user_id:str):
     envio_a_crear = db.query().filter(Envio.numero_seguimiento == envio.numero_seguimiento).first()
     domicilio_preferido_id = db.query(Domicilios).filter(Domicilios.usuarios_id == user_id, Domicilios.preferido == True).first()
     if envio_a_crear:
-        return None
+        raise EnvioExistenteException()
     nuevo_envio = Envio(
         fecha_entrega = envio.fecha_entrega,
         estado = envio.estado,
@@ -46,10 +49,10 @@ def post_envio(db:Session,envio:EnvioBase,user_id:str):
     db.refresh(nuevo_envio)
     return nuevo_envio
 
-def patch_envios(db:Session,envio_id:int,envio_actualizado:EnvioActualizar,user_id:str):
+def patch_envios(db:Session,envio_id:str,envio_actualizado:EnvioActualizar,user_id:str):
     envio_a_actualizar = db.query(Envio).filter(Envio.id == envio_id).first()
     if not envio_a_actualizar:
-        return None
+        raise EnvioNoExistenteException()
     
     update_data = envio_actualizado.model_dump(exclude_unset=True)
 
@@ -59,10 +62,11 @@ def patch_envios(db:Session,envio_id:int,envio_actualizado:EnvioActualizar,user_
     db.refresh(envio_a_actualizar)
     return envio_a_actualizar
 
-def delete_envios(db:Session,envio_id:int,user_id:str):
-    envio_a_borrar = db.query(Envio).filter(Envio.id == envio_id).first()
+def delete_envios(db:Session,envio_id:str,user_id:str):
+    envio_a_borrar = db.query(Envio).filter(Envio.id == envio_id,Envio.activo==True).first()
     if not envio_a_borrar:
-        return None
-    db.delete(envio_a_borrar)
+        raise EnvioNoExistenteException()
+    envio_a_borrar.activo = False
     db.commit()
+    db.refresh(envio_a_borrar)
     return envio_a_borrar

@@ -1,19 +1,23 @@
 from pydantic import BaseModel, Field
 from typing import Optional
 from decimal import Decimal
+from uuid import UUID
 
 
 class DetalleCarritoBase(BaseModel):
     cantidad:int
     precio:Decimal=Field(...,decimal_places=2, le=Decimal("99999.99"))
-    productos_id:int
+    productos_id:UUID
 
+class DetalleCarritoCrear(BaseModel):
+    cantidad:int
+    productos_id:UUID
+    
 class DetalleCarritoActualizar(BaseModel):
     cantidad:Optional[int]
-    precio:Optional[Decimal]=Field(None,decimal_places=2,le=Decimal("99999.99"))
 
 class DetalleCarritoResponder(DetalleCarritoBase):
-    id:int
+    id:UUID
 
     class Config:
         from_attributes=True

@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field
 from typing import Optional, List
 from decimal import Decimal
+from uuid import UUID
 
 class ProductoBase(BaseModel):
     nombre: str = Field(..., max_length=60)
@@ -13,7 +14,7 @@ class ProductoBase(BaseModel):
     alto: Decimal = Field(default=Decimal("0.0"), decimal_places=1, le=Decimal("9999.9"))
     ancho: Decimal = Field(default=Decimal("0.0"), decimal_places=1, le=Decimal("9999.9"))
     profundidad: Decimal = Field(default=Decimal("0.0"), decimal_places=1, le=Decimal("9999.9"))
-    categorias_id: int = Field(..., description="ID de la Categoría asociada")
+    categorias_id: UUID = Field(..., description="ID de la Categoría asociada")
     url_producto: str = Field(..., max_length=255, description="URL de la imagen o ficha del producto")
 
     class Config:
@@ -31,7 +32,7 @@ class ProductoActualizar(BaseModel):
     alto: Optional[Decimal] = Field(None, decimal_places=1, le=Decimal("9999.9"))
     ancho: Optional[Decimal] = Field(None, decimal_places=1, le=Decimal("9999.9"))
     profundidad: Optional[Decimal] = Field(None, decimal_places=1, le=Decimal("9999.9"))
-    categorias_id: Optional[int] = None
+    categorias_id: Optional[UUID] = None
     url_producto: Optional[str] = Field(None, max_length=255)
 
     class Config:
@@ -39,7 +40,7 @@ class ProductoActualizar(BaseModel):
         json_encoders = {Decimal: lambda v: str(v)}
 
 class ProductoResponder(ProductoBase):
-    id: int 
+    id: UUID 
     
     class Config:
         from_attributes = True

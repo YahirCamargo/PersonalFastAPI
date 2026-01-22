@@ -7,6 +7,7 @@ from sqlalchemy.orm import Session
 import uuid
 from datetime import datetime, timedelta
 from models.models_refresh_tokens import RefreshToken
+from core.config import settings
 
 CREDENTIALS_EXCEPTION = HTTPException(
     status_code=status.HTTP_401_UNAUTHORIZED,
@@ -14,22 +15,6 @@ CREDENTIALS_EXCEPTION = HTTPException(
     headers={"WWW-Authenticate": "Bearer"},
 )
 
-class Settings(BaseSettings):
-    mysql_user: str
-    mysql_password: str
-    mysql_host: str
-    mysql_port: str
-    mysql_db: str
-
-    secret_key: str
-    algorithm: str
-    refresh_token_expire_days:int
-    access_token_expire_minutes: int
-
-    class Config:
-        env_file = ".env"
-
-settings = Settings()
 contraseña_contexto = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
 
 def hashear_contraseña(password: str) -> str:
@@ -38,13 +23,13 @@ def hashear_contraseña(password: str) -> str:
 def verificar_contraseña(plain_password: str, hashed_password: str):
     return contraseña_contexto.verify(plain_password, hashed_password)
 
-def crear_refresh_token(db: Session, user_id: int) -> str:
+def crear_refresh_token(db: Session, user_id: uuid.UUID) -> str:
     token_str = str(uuid.uuid4())
     expira = datetime.utcnow() + timedelta(days=settings.refresh_token_expire_days)
     
     nuevo_refresh_token = RefreshToken(
         token=token_str,
-        usuarios_id=user_id,
+        usuarios_id=str(user_id),
         expira_en=expira,
         usado=False
     )

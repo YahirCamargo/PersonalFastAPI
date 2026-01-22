@@ -5,7 +5,7 @@ from core.seguridad import verificar_token, CREDENTIALS_EXCEPTION
 from models.models_usuarios import Usuario
 from db.database import SessionLocal 
 from starlette import status
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login") 
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login") 
 
 def get_db():
     db = SessionLocal()

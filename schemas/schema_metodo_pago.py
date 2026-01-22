@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Field
 from decimal import Decimal
+from uuid import UUID
 
 class MetodoPagoBase(BaseModel):
     nombre:str
@@ -7,7 +8,7 @@ class MetodoPagoBase(BaseModel):
 
 
 class MetodoPagoResponder(MetodoPagoBase):
-    id:int
+    id:UUID
 
     class Config:
         from_attributes = True

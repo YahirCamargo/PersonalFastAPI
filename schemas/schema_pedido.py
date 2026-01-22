@@ -2,12 +2,13 @@ from pydantic import BaseModel, Field
 from decimal import Decimal
 from datetime import datetime
 from typing import Optional
+from uuid import UUID
 
 class PedidoBase(BaseModel):
     numero:str=Field(max_length=36)
     importe_productos:Decimal=Field(...,decimal_places=2,le=Decimal("99999999.99"))
     importe_envio:Decimal=Field(...,decimal_places=2,le=Decimal("9999.99"))
-    metodos_pago_id:int
+    metodos_pago_id:UUID
     fecha_hora_pago:datetime | None
 
     class Config:
@@ -32,11 +33,11 @@ class PedidoActualizar(BaseModel):
         }
 
 class PedidoCheckout(BaseModel):
-    metodos_pago_id: int
-    domicilios_id: int
+    metodos_pago_id: UUID
+    domicilios_id: UUID
 
 class PedidoResponder(PedidoBase):
-    id:int
+    id:UUID
     
     class Config:
         from_attributes=True

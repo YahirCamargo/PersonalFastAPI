@@ -24,28 +24,18 @@ def obtener_domicilios(db:Session=Depends(get_db),current_user: Usuario = Depend
 
 @router.get('/{domicilio_id}',response_model=DomicilioResponder)
 def obtener_domicilios_por_id(domicilio_id:str,db:Session=Depends(get_db),current_user: Usuario = Depends(get_current_user)):
-    domicilio = get_domicilios_por_id(db,domicilio_id,current_user.id)
-    if not domicilio:
-        raise HTTPException(status_code=404,detail="Domicilio no encontrado")
-    return domicilio
+    return get_domicilios_por_id(db,domicilio_id,current_user.id)
 
 @router.post('/',response_model=DomicilioResponder,status_code=status.HTTP_201_CREATED)
 def crear_domicilios(domicilio:DomicilioBase,db:Session=Depends(get_db),current_user: Usuario = Depends(get_current_user)):
-    domicilio_a_crear = post_domicilios(db,domicilio,current_user.id)
-    return domicilio_a_crear
+    return post_domicilios(db,domicilio,current_user.id)
 
 # Checar bien esto y mejor usar patch
 @router.put('/{domicilio_id}',response_model=DomicilioResponder)
 def actualizar_domicilio(domicilio_id:str,domicilio:DomicilioActualizar,db:Session=Depends(get_db),current_user: Usuario = Depends(get_current_user)):
-    domicilio_a_actualizar = patch_domicilios(db,domicilio_id,domicilio,current_user.id)
-    if not domicilio_a_actualizar:
-        raise HTTPException(status_code=404,detail="Domicilio no encontrado")
-    return domicilio_a_actualizar
+    return patch_domicilios(db,domicilio_id,domicilio,current_user.id)
 
 
 @router.delete('/{domicilio_id}',response_model=DomicilioResponder)
 def borrar_domicilio(domicilio_id:str,db:Session=Depends(get_db),current_user: Usuario = Depends(get_current_user)):
-    domicilio_a_borrar = delete_domicilios(db,domicilio_id,current_user.id)
-    if not domicilio_a_borrar:
-        raise HTTPException(status_code=404,detail="Domicilio no encontrado")
-    return domicilio_a_borrar
+    return delete_domicilios(db,domicilio_id,current_user.id)

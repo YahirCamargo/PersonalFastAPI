@@ -10,16 +10,16 @@ import uuid
 from schemas.schema_pedido import PedidoBase,PedidoActualizar
 
 def get_pedido(db:Session,user_id:str)-> List[Pedido]:
-    return db.query(Pedido).filter(Pedido.usuarios_id==user_id).all()
+    return db.query(Pedido).filter(Pedido.usuarios_id==user_id,Pedido.activo==True).all()
 
-def get_pedido_por_id(db:Session,pedido_id:int,user_id:str):
-    pedido_por_id = db.query(Pedido).filter(Pedido.usuarios_id == user_id, Pedido.id == pedido_id).first()
+def get_pedido_por_id(db:Session,pedido_id:str,user_id:str):
+    pedido_por_id = db.query(Pedido).filter(Pedido.usuarios_id == user_id, Pedido.id == pedido_id,Pedido.activo==True).first()
     if not pedido_por_id:
         return None
     return pedido_por_id
 
 
-def post_pedido(db: Session, importe_envio: float, metodos_pago_id: int, domicilios_id: int, user_id: int):
+def post_pedido(db: Session, importe_envio: float, metodos_pago_id: str, domicilios_id: str, user_id: str):
     importe_productos = db.query(
         func.sum(DetalleCarrito.precio * DetalleCarrito.cantidad)
     ).filter(DetalleCarrito.usuarios_id == user_id).scalar()
@@ -61,8 +61,8 @@ def post_pedido(db: Session, importe_envio: float, metodos_pago_id: int, domicil
         db.rollback() 
         raise e
 
-def patch_pedido(db:Session,pedido_id:int,pedido:PedidoActualizar,user_id:str):
-    pedido_a_actualizar = db.query(Pedido).filter(Pedido.id == pedido_id,Pedido.usuarios_id == user_id).first()
+def patch_pedido(db:Session,pedido_id:str,pedido:PedidoActualizar,user_id:str):
+    pedido_a_actualizar = db.query(Pedido).filter(Pedido.id == pedido_id,Pedido.usuarios_id == user_id,Pedido.activo==True).first()
     if not pedido_a_actualizar:
         return None
     update_data = pedido.model_dump(exclude_unset=True)
@@ -74,11 +74,12 @@ def patch_pedido(db:Session,pedido_id:int,pedido:PedidoActualizar,user_id:str):
     db.refresh(pedido_a_actualizar)
     return pedido_a_actualizar
 
-def delete_pedido(db:Session,pedido_id:int,user_id:str):
-    pedido_a_borrar = db.query(Pedido).filter(Pedido.id == pedido_id,Pedido.usuarios_id == user_id).first()
+def delete_pedido(db:Session,pedido_id:str,user_id:str):
+    pedido_a_borrar = db.query(Pedido).filter(Pedido.id == pedido_id,Pedido.usuarios_id == user_id,Pedido.activo==True).first()
     
     if not pedido_a_borrar:
         return None
-    db.delete(pedido_a_borrar)
+    pedido_a_borrar.activo=False
     db.commit()
+    db.refresh(pedido_a_borrar)
     return pedido_a_borrar

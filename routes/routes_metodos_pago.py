@@ -23,21 +23,12 @@ def leer_metodos_pago(db: Session = Depends(get_db)):
 
 @router.post('/',response_model=MetodoPagoResponder,status_code=status.HTTP_201_CREATED)
 def crear_metodos_pagp(metodo: MetodoPagoBase, db:Session=Depends(get_db)):
-    resultado = crear_metodo_pago(db,metodo)
-    if not resultado:
-        raise HTTPException(status_code=400,detail="El metodo ya fue creado")
-    return resultado
+    return crear_metodo_pago(db,metodo)
 
 @router.put('/{metodo_id}',response_model=MetodoPagoResponder)
 def actualizar_metodos_pago(metodo_id:str,metodo_actualizar:MetodoPagoBase,db:Session=Depends(get_db)):
-    resultado = actualizar_metodo_pago(metodo_id,metodo_actualizar,db)
-    if not resultado:
-        raise HTTPException(status_code=404,detail="Metodo de pago no encontrado")
-    return resultado
+    return actualizar_metodo_pago(metodo_id,metodo_actualizar,db)
 
 @router.delete('/{metodo_id}',response_model=MetodoPagoResponder)
 def eliminar_metodo_pago(metodo_id:str,db:Session=Depends(get_db)):
-    resultado = borrar_metodo_pago(db,metodo_id)
-    if not resultado:
-        raise HTTPException(status_code=404,detail="Metodo de pago no encontrado")
-    return resultado
+    return borrar_metodo_pago(db,metodo_id)

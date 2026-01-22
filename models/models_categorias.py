@@ -1,21 +1,15 @@
-from sqlalchemy import Column, String, Index
-from sqlalchemy.dialects.mysql import TINYINT 
+import uuid
+from sqlalchemy import Column, String, Boolean, Index
+from sqlalchemy.dialects.postgresql import UUID
 from db.database import Base
 
 class Categoria(Base):
     __tablename__ = "categorias"
-    id = Column(TINYINT(unsigned=True),primary_key=True, autoincrement=True, nullable=False)
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     nombre = Column(String(40), nullable=False)
+    activo = Column(Boolean, nullable=False, default=True)
+
     __table_args__ = (
-        Index('idx_nombre_fulltext', nombre, mysql_using='fulltext'),
+        Index("idx_categorias_nombre", "nombre"),
     )
-
-
-"""
-CREATE TABLE `categorias` (
-  `id` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
-  `nombre` varchar(40) NOT NULL,
-  PRIMARY KEY (`id`),
-  FULLTEXT KEY `idx_nombre_fulltext` (`nombre`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
-"""

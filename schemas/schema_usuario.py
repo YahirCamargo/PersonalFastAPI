@@ -1,6 +1,7 @@
 from pydantic import BaseModel, EmailStr, Field
 from typing import Literal, Optional
 from datetime import date
+from uuid import UUID
 
 class UsuarioBase(BaseModel):
     nombre: str
@@ -18,7 +19,7 @@ class UsuarioLogin(BaseModel):
     contrasena:str
 
 class UsuarioResponder(UsuarioBase):
-    id:int
+    id:UUID
     rol:str
 
     class Config:

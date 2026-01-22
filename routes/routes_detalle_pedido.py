@@ -25,10 +25,7 @@ def obtener_detalle_pedido(db:Session=Depends(get_db),current_user: Usuario = De
 
 @router.get('/{detalle_pedido_id}',response_model=DetallePedidoResponder)
 def obtener_detalle_pedido_por_id(detalle_pedido_id:str,db:Session=Depends(get_db),current_user: Usuario = Depends(get_current_user)):
-    detalle_pedido = get_detalles_pedido_por_id(db,detalle_pedido_id,current_user.id)
-    if not detalle_pedido:
-        raise HTTPException(status_code=404,detail="Detalle pedido no encontrado")
-    return detalle_pedido
+    return get_detalles_pedido_por_id(db,detalle_pedido_id,current_user.id)
 
 
 @router.post('/',response_model=DetallePedidoResponder,status_code=status.HTTP_201_CREATED)
@@ -38,14 +35,8 @@ def crear_detalle_pedido(detalle_pedido:DetallePedidoBase,db:Session=Depends(get
 
 @router.patch('/{detalle_pedido_id}',response_model=DetallePedidoResponder)
 def actualizar_detalle_pedido(detalle_pedido_id:str,detalle_pedido:DetallePedidoActualizar,db:Session=Depends(get_db)):
-    detalle_pedido_a_actualizar = patch_detalles_pedido(db,detalle_pedido_id,detalle_pedido)
-    if not detalle_pedido_a_actualizar:
-        raise HTTPException(status_code=404,detail="Detalle de pedido no encontrado")
-    return detalle_pedido_a_actualizar
+    return patch_detalles_pedido(db,detalle_pedido_id,detalle_pedido)
 
 @router.delete('/{detalle_pedido_id}',response_model=DetallePedidoResponder)
 def actualizar_detalle_pedido(detalle_pedido_id:str,db:Session=Depends(get_db)):
-    detalle_pedido_a_borrar = delete_detalles_pedido(db,detalle_pedido_id)
-    if not detalle_pedido_a_borrar:
-        raise HTTPException(status_code=404,detail="Detalle de pedido no encontrado")
-    return detalle_pedido_a_borrar
+    return delete_detalles_pedido(db,detalle_pedido_id)

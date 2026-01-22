@@ -7,6 +7,7 @@ from sqlalchemy.orm import Session
 import uuid
 from datetime import datetime, timedelta
 from models.models_refresh_tokens import RefreshToken
+from core.config import settings
 
 CREDENTIALS_EXCEPTION = HTTPException(
     status_code=status.HTTP_401_UNAUTHORIZED,
@@ -14,16 +15,7 @@ CREDENTIALS_EXCEPTION = HTTPException(
     headers={"WWW-Authenticate": "Bearer"},
 )
 
-class Settings(BaseSettings):
-    secret_key: str
-    algorithm: str
-    refresh_token_expire_days:int
-    access_token_expire_minutes: int
 
-    class Config:
-        env_file = ".env"
-
-settings = Settings()
 contraseña_contexto = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
 
 def hashear_contraseña(password: str) -> str:

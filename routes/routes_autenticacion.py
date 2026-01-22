@@ -10,28 +10,14 @@ from fastapi.security import OAuth2PasswordRequestForm
 from models.models_refresh_tokens import RefreshToken
 from schemas.schema_autenticacion import TokenRefreshRequest, TokenPair
 from starlette import status
+from core.config import settings
 
 from dependencies.dependencies_autenticacion import get_current_user
 
 
 router = APIRouter(prefix="/auth",tags=["Auth"])
 
-class Settings(BaseSettings):
-    mysql_user: str
-    mysql_password: str
-    mysql_host: str
-    mysql_port: str
-    mysql_db: str
 
-    secret_key: str
-    algorithm: str
-    refresh_token_expire_days:int
-    access_token_expire_minutes: int
-
-    class Config:
-        env_file = ".env"
-
-settings = Settings()
 
 
 def get_db():
@@ -74,7 +60,7 @@ def refresh_token(data: TokenRefreshRequest,db: Session = Depends(get_db)):
     nuevo_access_token = crear_token_acceso({
         "sub": user_actual.email,
         "rol": user_actual.rol,
-        "user_id": user_actual.id
+        "user_id": str(user_actual.id)
     })
     nuevo_refresh_token_str = crear_refresh_token(db, user_id)
     
@@ -118,7 +104,7 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
             headers={"WWW-Authenticate": "Bearer"},
         )
     
-    access_token = crear_token_acceso({"sub": user.email,"user_id": user.id,"rol": user.rol})
+    access_token = crear_token_acceso({"sub": user.email,"user_id": str(user.id),"rol": user.rol})
     refresh_token = crear_refresh_token(db,user.id)
     db.commit()
     return {

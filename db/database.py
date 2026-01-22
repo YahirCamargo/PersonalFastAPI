@@ -1,27 +1,16 @@
 from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
-from pydantic_settings import BaseSettings
-
-class Settings(BaseSettings):
-    mysql_user: str
-    mysql_password: str
-    mysql_host: str
-    mysql_port: str
-    mysql_db: str
-
-    secret_key: str
-    algorithm: str
-    refresh_token_expire_days:int
-    access_token_expire_minutes: int
-
-    class Config:
-        env_file = ".env"
-
-settings = Settings()
+from sqlalchemy.orm import sessionmaker,declarative_base
+from core.config import settings
 
 
-DATABASE_URL = f"mysql+pymysql://{settings.mysql_user}:{settings.mysql_password}@{settings.mysql_host}:{settings.mysql_port}/{settings.mysql_db}"
+DATABASE_URL = (
+    f"postgresql+psycopg2://"
+    f"{settings.postgres_user}:"
+    f"{settings.postgres_password}@"
+    f"{settings.postgres_host}:"
+    f"{settings.postgres_port}/"
+    f"{settings.postgres_db}"
+)
 
 engine = create_engine(DATABASE_URL)
 

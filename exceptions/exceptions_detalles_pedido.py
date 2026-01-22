@@ -1,0 +1,2 @@
+class DetallePedidoNoExistenteException(Exception):
+    pass

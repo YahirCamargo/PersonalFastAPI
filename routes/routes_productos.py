@@ -22,7 +22,4 @@ def leer_productos(db: Session = Depends(get_db)):
 
 @router.get('/{producto_id}',response_model=ProductoResponder)
 def leer_producto_por_id(producto_id:str,db: Session = Depends(get_db)):
-    producto = get_producto_por_id(db,producto_id)
-    if not producto:
-        raise HTTPException(status_code=404,detail="No se encontro el producto")
-    return producto
+    return get_producto_por_id(db,producto_id)
