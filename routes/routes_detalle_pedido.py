@@ -23,9 +23,9 @@ def get_db():
 def obtener_detalle_pedido(db:Session=Depends(get_db),current_user: Usuario = Depends(get_current_user)):
     return get_detalles_pedido(db,current_user.id)
 
-@router.get('/{detalle_pedido_id}',response_model=DetallePedidoResponder)
-def obtener_detalle_pedido_por_id(detalle_pedido_id:str,db:Session=Depends(get_db),current_user: Usuario = Depends(get_current_user)):
-    return get_detalles_pedido_por_id(db,detalle_pedido_id,current_user.id)
+@router.get('/{id}',response_model=DetallePedidoResponder)
+def obtener_detalle_pedido_por_id(id:str,db:Session=Depends(get_db),current_user: Usuario = Depends(get_current_user)):
+    return get_detalles_pedido_por_id(db,id,current_user.id)
 
 
 @router.post('/',response_model=DetallePedidoResponder,status_code=status.HTTP_201_CREATED)
@@ -33,10 +33,10 @@ def crear_detalle_pedido(detalle_pedido:DetallePedidoBase,db:Session=Depends(get
     detalle_pedido_a_crear = post_detalles_pedido(db,detalle_pedido)
     return detalle_pedido_a_crear
 
-@router.patch('/{detalle_pedido_id}',response_model=DetallePedidoResponder)
-def actualizar_detalle_pedido(detalle_pedido_id:str,detalle_pedido:DetallePedidoActualizar,db:Session=Depends(get_db)):
-    return patch_detalles_pedido(db,detalle_pedido_id,detalle_pedido)
+@router.patch('/{id}',response_model=DetallePedidoResponder)
+def actualizar_detalle_pedido(id:str,detalle_pedido:DetallePedidoActualizar,db:Session=Depends(get_db)):
+    return patch_detalles_pedido(db,id,detalle_pedido)
 
-@router.delete('/{detalle_pedido_id}',response_model=DetallePedidoResponder)
-def actualizar_detalle_pedido(detalle_pedido_id:str,db:Session=Depends(get_db)):
-    return delete_detalles_pedido(db,detalle_pedido_id)
+@router.delete('/{id}',response_model=DetallePedidoResponder)
+def actualizar_detalle_pedido(id:str,db:Session=Depends(get_db)):
+    return delete_detalles_pedido(db,id)

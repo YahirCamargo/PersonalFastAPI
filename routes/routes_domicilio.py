@@ -22,20 +22,20 @@ def get_db():
 def obtener_domicilios(db:Session=Depends(get_db),current_user: Usuario = Depends(get_current_user)):
     return get_domicilios(db,user_id=current_user.id)
 
-@router.get('/{domicilio_id}',response_model=DomicilioResponder)
-def obtener_domicilios_por_id(domicilio_id:str,db:Session=Depends(get_db),current_user: Usuario = Depends(get_current_user)):
-    return get_domicilios_por_id(db,domicilio_id,current_user.id)
+@router.get('/{id}',response_model=DomicilioResponder)
+def obtener_domicilios_por_id(id:str,db:Session=Depends(get_db),current_user: Usuario = Depends(get_current_user)):
+    return get_domicilios_por_id(db,id,current_user.id)
 
 @router.post('/',response_model=DomicilioResponder,status_code=status.HTTP_201_CREATED)
 def crear_domicilios(domicilio:DomicilioBase,db:Session=Depends(get_db),current_user: Usuario = Depends(get_current_user)):
     return post_domicilios(db,domicilio,current_user.id)
 
 # Checar bien esto y mejor usar patch
-@router.put('/{domicilio_id}',response_model=DomicilioResponder)
-def actualizar_domicilio(domicilio_id:str,domicilio:DomicilioActualizar,db:Session=Depends(get_db),current_user: Usuario = Depends(get_current_user)):
-    return patch_domicilios(db,domicilio_id,domicilio,current_user.id)
+@router.patch('/{id}',response_model=DomicilioResponder)
+def actualizar_domicilio(id:str,domicilio:DomicilioActualizar,db:Session=Depends(get_db),current_user: Usuario = Depends(get_current_user)):
+    return patch_domicilios(db,id,domicilio,current_user.id)
 
 
-@router.delete('/{domicilio_id}',response_model=DomicilioResponder)
-def borrar_domicilio(domicilio_id:str,db:Session=Depends(get_db),current_user: Usuario = Depends(get_current_user)):
-    return delete_domicilios(db,domicilio_id,current_user.id)
+@router.delete('/{id}',response_model=DomicilioResponder)
+def borrar_domicilio(id:str,db:Session=Depends(get_db),current_user: Usuario = Depends(get_current_user)):
+    return delete_domicilios(db,id,current_user.id)

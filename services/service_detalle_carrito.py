@@ -69,10 +69,17 @@ def patch_detalle_carrito(db:Session,detalle_carrito_id:str,detalle_carrito_actu
     if not detalle_carrito_a_actualizar:
         raise DetalleCarritoNoExistenteException()
     
+    if(detalle_carrito_actualizado.cantidad==0):
+        detalle_carrito_a_actualizar.activo = False
+        db.commit()
+        db.refresh(detalle_carrito_a_actualizar)
+        return detalle_carrito_a_actualizar
+    
     update_data = detalle_carrito_actualizado.model_dump(exclude_unset=True)
 
     for key, value in update_data.items():
         setattr(detalle_carrito_a_actualizar, key, value)
+    
 
     db.commit()
     db.refresh(detalle_carrito_a_actualizar)

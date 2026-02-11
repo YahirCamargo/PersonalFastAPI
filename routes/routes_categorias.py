@@ -24,10 +24,10 @@ def obtener_categoria(db:Session=Depends(get_db)):
 def crear_categoria(categoria:CategoriaBase,db:Session=Depends(get_db)):
     return post_categoria(db,categoria)
 
-@router.put('/{categoria_id}',response_model=CategoriaResponder)
-def actualizar_categoria(categoria_id:str,categoria_actualizada:CategoriaBase,db:Session=Depends(get_db)): 
-    return put_categoria(db,categoria_id,categoria_actualizada)
+@router.put('/{id}',response_model=CategoriaResponder)
+def actualizar_categoria(id:str,categoria_actualizada:CategoriaBase,db:Session=Depends(get_db)): 
+    return put_categoria(db,id,categoria_actualizada)
 
-@router.delete('/{categoria_id}',response_model=CategoriaResponder)
-def borrar_categoria(categoria_id:str,db:Session=Depends(get_db)):
-    return delete_categoria(db,categoria_id)
+@router.delete('/{id}',response_model=CategoriaResponder)
+def borrar_categoria(id:str,db:Session=Depends(get_db)):
+    return delete_categoria(db,id)

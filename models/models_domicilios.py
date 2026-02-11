@@ -8,11 +8,13 @@ class Domicilios(Base):
 
     id = Column(UUID(as_uuid=True), nullable=False, primary_key=True,default=uuid.uuid4)
     calle = Column(String(45), nullable=False)
-    numero = Column(String(10), nullable=False) #Ej 123A, S/N, 456-B
+    numero = Column(String(10), nullable=False)
     colonia = Column(String(30), nullable=False)
     cp = Column(String(5), nullable=False)
     estado = Column(String(20), nullable=False)
     ciudad = Column(String(45),nullable=False)
+    destinatario = Column(String, nullable=False)
+    detalles = Column(String, nullable=True)
     preferido = Column(Boolean, nullable=False, default=False)
     activo = Column(Boolean, nullable=False, default=True)
     usuarios_id = Column(

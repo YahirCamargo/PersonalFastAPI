@@ -25,10 +25,10 @@ def leer_metodos_pago(db: Session = Depends(get_db)):
 def crear_metodos_pagp(metodo: MetodoPagoBase, db:Session=Depends(get_db)):
     return crear_metodo_pago(db,metodo)
 
-@router.put('/{metodo_id}',response_model=MetodoPagoResponder)
-def actualizar_metodos_pago(metodo_id:str,metodo_actualizar:MetodoPagoBase,db:Session=Depends(get_db)):
-    return actualizar_metodo_pago(metodo_id,metodo_actualizar,db)
+@router.put('/{id}',response_model=MetodoPagoResponder)
+def actualizar_metodos_pago(id:str,metodo_actualizar:MetodoPagoBase,db:Session=Depends(get_db)):
+    return actualizar_metodo_pago(id,metodo_actualizar,db)
 
-@router.delete('/{metodo_id}',response_model=MetodoPagoResponder)
-def eliminar_metodo_pago(metodo_id:str,db:Session=Depends(get_db)):
-    return borrar_metodo_pago(db,metodo_id)
+@router.delete('/{id}',response_model=MetodoPagoResponder)
+def eliminar_metodo_pago(id:str,db:Session=Depends(get_db)):
+    return borrar_metodo_pago(db,id)

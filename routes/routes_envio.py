@@ -23,20 +23,19 @@ def obtener_envios(db:Session=Depends(get_db),current_user: Usuario = Depends(ge
     envios =  get_envio(db,current_user.id)
     return envios
 
-@router.get('/{envio_id}',response_model=EnviosResponder)
-def obtener_envios(envio_id:str,db:Session=Depends(get_db),current_user: Usuario = Depends(get_current_user)):
-    return get_envio_por_id(db,envio_id,current_user.id)
+@router.get('/{id}',response_model=EnviosResponder)
+def obtener_envios(id:str,db:Session=Depends(get_db),current_user: Usuario = Depends(get_current_user)):
+    return get_envio_por_id(db,id,current_user.id)
 
 @router.post('/',response_model=EnviosResponder,status_code=status.HTTP_201_CREATED)
 def crear_envios(envio:EnvioBase,db:Session=Depends(get_db),current_user: Usuario = Depends(get_current_user)):
     return post_envio(db,envio,current_user.id)
 
-# Checar bien esto y mejor usar patch
-@router.patch('/{envio_id}',response_model=EnviosResponder)
-def actualizar_envios(envio_id:str,envio_actualizado:EnvioActualizar,db:Session=Depends(get_db),current_user: Usuario = Depends(get_current_user)):
-    return patch_envios(db,envio_id,envio_actualizado,current_user.id)
+@router.patch('/{id}',response_model=EnviosResponder)
+def actualizar_envios(id:str,envio_actualizado:EnvioActualizar,db:Session=Depends(get_db),current_user: Usuario = Depends(get_current_user)):
+    return patch_envios(db,id,envio_actualizado,current_user.id)
 
 
-@router.delete('/{envio_id}',response_model=EnviosResponder)
-def borrar_envios(envio_id:str,db:Session=Depends(get_db),current_user: Usuario = Depends(get_current_user)):
-    return delete_envios(db,envio_id,current_user.id)
+@router.delete('/{id}',response_model=EnviosResponder)
+def borrar_envios(id:str,db:Session=Depends(get_db),current_user: Usuario = Depends(get_current_user)):
+    return delete_envios(db,id,current_user.id)

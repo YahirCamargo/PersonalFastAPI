@@ -24,9 +24,9 @@ def get_db():
 def obtener_pedidos(db:Session=Depends(get_db),current_user: Usuario = Depends(get_current_user)):
     return get_pedido(db,current_user.id)
 
-@router.get('/{pedido_id}',response_model=PedidoResponder)
-def obtener_pedidos_por_id(pedido_id:str,db:Session=Depends(get_db),current_user: Usuario = Depends(get_current_user)):
-    pedido = get_pedido_por_id(db,pedido_id,current_user.id)
+@router.get('/{id}',response_model=PedidoResponder)
+def obtener_pedidos_por_id(id:str,db:Session=Depends(get_db),current_user: Usuario = Depends(get_current_user)):
+    pedido = get_pedido_por_id(db,id,current_user.id)
     if not pedido:
         raise HTTPException(status_code=404,detail="Pedido no encontrado")
     return pedido

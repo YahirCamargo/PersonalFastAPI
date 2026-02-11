@@ -1,5 +1,6 @@
 from fastapi import Request
 from fastapi.responses import JSONResponse
+from exceptions.exceptions_autenticacion import CorreoYaRegistadoException,NoAutorizadoException,SesionExpiradaException,TokenNoValidoException,TokenYaUsadoException,UsuarioNoExistenteException,NoAccesoAlRecursoException
 from exceptions.exceptions_categorias import CategoriaNoExistenteException,CategoriaYaExisteException
 from exceptions.exceptions_detalles_carrito import DetalleCarritoVacioException,DetalleCarritoNoExistenteException
 from exceptions.exceptions_detalles_pedido import DetallePedidoNoExistenteException
@@ -10,6 +11,78 @@ from exceptions.exceptions_productos import ProductoNoExistenteException
 
 def register_exception_handlers(app):
 
+    @app.exception_handler(TokenNoValidoException)
+    async def token_no_valido_handler(
+        equest: Request,
+        exc: TokenNoValidoException  
+    ):
+        return JSONResponse(
+            status_code=401,
+            content={"detail": "Refresh token inválido o no existe"}
+        )
+    
+    @app.exception_handler(TokenYaUsadoException)
+    async def token_ya_usado_handler(
+        equest: Request,
+        exc: TokenYaUsadoException  
+    ):
+        return JSONResponse(
+            status_code=401,
+            content={"detail": "Token ya utilizado. Acceso denegado por seguridad"}
+        )
+    
+    @app.exception_handler(SesionExpiradaException)
+    async def sesion_expirada_handler(
+        equest: Request,
+        exc: SesionExpiradaException  
+    ):
+        return JSONResponse(
+            status_code=401,
+            content={"detail": "Sesión expirada. Por favor, inicie sesión nuevamente"}
+        )
+    
+    @app.exception_handler(CorreoYaRegistadoException)
+    async def correo_ya_registrado_handler(
+        equest: Request,
+        exc: CorreoYaRegistadoException  
+    ):
+        return JSONResponse(
+            status_code=400,
+            content={"detail": "El correo ya está registrado"}
+        )
+    
+    @app.exception_handler(NoAutorizadoException)
+    async def no_autorizado_handler(
+        equest: Request,
+        exc: NoAutorizadoException  
+    ):
+        return JSONResponse(
+            status_code=403,
+            content={"detail": "Credenciales inválidas"},
+            headers={"WWW-Authenticate": "Bearer"}
+        )
+    
+    @app.exception_handler(UsuarioNoExistenteException)
+    async def usuario_no_existente_handler(
+        equest: Request,
+        exc: UsuarioNoExistenteException  
+    ):
+        return JSONResponse(
+            status_code=404,
+            content={"detail": "Usuario no encontrada"}
+        )
+    
+    @app.exception_handler(NoAccesoAlRecursoException)
+    async def no_acceso_al_recurso_handler(
+        equest: Request,
+        exc: NoAccesoAlRecursoException  
+    ):
+        return JSONResponse(
+            status_code=403,
+            content={"detail": "No tienes acceso a este recurso"}
+        )
+
+
     @app.exception_handler(CategoriaNoExistenteException)
     async def categoria_no_existente_handler(
         equest: Request,
@@ -19,6 +92,7 @@ def register_exception_handlers(app):
             status_code=404,
             content={"detail": "Categoria no encontrada"}
         )
+
     @app.exception_handler(CategoriaYaExisteException)
     async def categoria_ya_existente_handler(
         equest: Request,

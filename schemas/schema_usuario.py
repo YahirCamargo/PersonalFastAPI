@@ -9,9 +9,11 @@ class UsuarioBase(BaseModel):
 
 class UsuarioCrear(UsuarioBase):
     contrasena:str=Field(...,min_length=8)
-    telefono:str=Field(...,max_length=10)
-    sexo:Literal["H","M"]
-    fecha_nacimiento:date
+
+class UsuarioCompletarPerfil(BaseModel):
+    telefono: Optional[str] = None
+    sexo: Optional[str] = None
+    fecha_nacimiento: Optional[date] = None
 
 
 class UsuarioLogin(BaseModel):

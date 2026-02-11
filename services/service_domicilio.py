@@ -3,9 +3,10 @@ from models.models_domicilios import Domicilios
 from schemas.schema_domicilio import DomicilioBase,DomicilioActualizar
 from exceptions.exceptions_domicilios import DomicilioNoExistenteException, NoDomicilioPreferidoException
 from typing import List
+from sqlalchemy import desc
 
 def get_domicilios(db:Session,user_id:str)-> List[Domicilios]:
-    return db.query(Domicilios).filter(Domicilios.usuarios_id == user_id,Domicilios.activo == True).all()
+    return db.query(Domicilios).filter(Domicilios.usuarios_id == user_id,Domicilios.activo == True).order_by(desc(Domicilios.preferido)).all()
 
 def get_domicilios_por_id(db:Session,domicilio_id:str,user_id:str):
     domicilio = db.query(Domicilios).filter(Domicilios.usuarios_id == user_id, Domicilios.id == domicilio_id,Domicilios.activo == True).first()
@@ -34,6 +35,8 @@ def post_domicilios(db:Session,domicilio:DomicilioBase,user_id:str):
             cp = domicilio.cp,
             estado = domicilio.estado,
             ciudad = domicilio.ciudad,
+            detalles = domicilio.detalles,
+            destinatario = domicilio.destinatario,
             usuarios_id = user_id,
             preferido = domicilio.preferido
         )
