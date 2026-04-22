@@ -41,7 +41,7 @@ def crear_refresh_token(db: Session, user_id: uuid.UUID) -> str:
     db.add(nuevo_refresh_token)
     db.flush()
 
-    return token_str  # 👈 regresas el token plano
+    return token_str
 
 def crear_token_acceso(data: dict, expires_delta: timedelta | None = None):
     if "sub" not in data:
