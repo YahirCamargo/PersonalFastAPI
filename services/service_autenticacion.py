@@ -7,11 +7,21 @@ from fastapi.security import OAuth2PasswordRequestForm
 from models.models_refresh_tokens import RefreshToken
 from schemas.schema_autenticacion import TokenRefreshRequest
 from exceptions.exceptions_autenticacion import NoAutorizadoException,CorreoYaRegistadoException,SesionExpiradaException,TokenNoValidoException,TokenYaUsadoException,UsuarioNoExistenteException, NoAccesoAlRecursoException
-from core.seguridad import hashear_contraseña, verificar_contraseña, crear_token_acceso,crear_refresh_token
+from core.seguridad import hashear_contraseña, verificar_contraseña, crear_token_acceso,crear_refresh_token, verificar_token_hash
 
 
-def post_refresh_token(data: TokenRefreshRequest,db: Session):
-    token_antiguo = db.query(RefreshToken).filter(RefreshToken.token == data.refresh_token).first()
+def post_refresh_token(data: TokenRefreshRequest, db: Session):
+    
+    tokens = db.query(RefreshToken)\
+        .filter(RefreshToken.usado == False)\
+        .all()
+
+    token_antiguo = None
+
+    for t in tokens:
+        if verificar_token_hash(data.refresh_token, t.token_hash):
+            token_antiguo = t
+            break
 
     if not token_antiguo:
         raise TokenNoValidoException()
@@ -35,8 +45,9 @@ def post_refresh_token(data: TokenRefreshRequest,db: Session):
         "rol": user_actual.rol,
         "user_id": str(user_actual.id)
     })
+
     nuevo_refresh_token_str = crear_refresh_token(db, user_id)
-    
+
     db.commit()
 
     return {

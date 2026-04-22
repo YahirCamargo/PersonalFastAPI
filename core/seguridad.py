@@ -25,19 +25,23 @@ def verificar_contraseña(plain_password: str, hashed_password: str):
 
 def crear_refresh_token(db: Session, user_id: uuid.UUID) -> str:
     token_str = str(uuid.uuid4())
+
+    token_hash = contraseña_contexto.hash(token_str)
+
     expira = datetime.utcnow() + timedelta(days=settings.refresh_token_expire_days)
-    
+
     nuevo_refresh_token = RefreshToken(
-        token=token_str,
-        usuarios_id=str(user_id),
+        token_id=uuid.uuid4(),
+        token_hash=token_hash,
+        usuarios_id=user_id,
         expira_en=expira,
         usado=False
     )
-    
+
     db.add(nuevo_refresh_token)
-    db.flush() 
-    
-    return token_str
+    db.flush()
+
+    return token_str  # 👈 regresas el token plano
 
 def crear_token_acceso(data: dict, expires_delta: timedelta | None = None):
     if "sub" not in data:
@@ -63,3 +67,6 @@ def verificar_token(token:str,credenciales_excepcion:HTTPException = CREDENTIALS
     except JWTError as e:
         print(f"Error de JWT: {e}")
         raise credenciales_excepcion
+    
+def verificar_token_hash(token_plano: str, token_hash: str) -> bool:
+    return contraseña_contexto.verify(token_plano, token_hash)
