@@ -17,7 +17,20 @@ from routes.routes_checkout import router as checkout_router
 from routes.routes_pedido_consulta import router as pedido_consulta_router
 
 
-app = FastAPI()
+app = FastAPI(
+    title="E-commerce Backend API",
+    description="""
+                API REST para gestión de usuarios, autenticación y pedidos.
+
+                Flujo de prueba:
+                1. Registrar usuario (/auth/register)
+                2. Iniciar sesión (/auth/login)
+                3. Usar el token en endpoints protegidos
+
+                Tecnologías: FastAPI, JWT, PostgreSQL, Render
+                """,
+    version="1.0.0"
+)
 register_exception_handlers(app)
 
 origins = ['*']
@@ -38,4 +51,11 @@ app.include_router(pedido_consulta_router,prefix='/api')
 
 @app.get("/")
 def read_root():
-    return {"message": "Hi, FastAPI is working"}
+    return {"message": "Hi, FastAPI is working",
+            "docs": "/docs",
+            "documentacion": "https://github.com/YahirCamargo/PersonalFastAPI"
+            }
+
+@app.get("/health")
+def health():
+    return {"status": "ok"}
