@@ -3,4 +3,6 @@ venv
 __pycache__/
 **/__pycache__/
 *.py[cod]
+__init__.py
+**/__init__.py
 *$py.class
