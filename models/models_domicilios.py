@@ -22,7 +22,8 @@ class Domicilios(Base):
         ForeignKey("usuarios.id",onupdate="CASCADE",ondelete="CASCADE"),
         index=True,
     )
+
+
     __table_args__ = (
         Index('idx_estado_ciudad', 'estado', 'ciudad'),
     )
-

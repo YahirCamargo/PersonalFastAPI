@@ -1,7 +1,13 @@
 import uuid
-from sqlalchemy import Column, DateTime, Numeric, func,ForeignKey,String,Boolean
+from sqlalchemy import Column, DateTime, Numeric, func,ForeignKey,String,Boolean,Index
 from sqlalchemy.dialects.postgresql import UUID
 from db.database import Base
+from models.envios import EstadoEnvioEnum
+class EstadoEnvioEnum(enum.Enum):
+    PENDIENTE = "PENDIENTE"
+    EN_TRANSITO = "EN_TRANSITO"
+    ENTREGADO = "ENTREGADO"
+    CANCELADO = "CANCELADO"
 
 class Pedido(Base):
     __tablename__ = "pedidos"
@@ -25,4 +31,12 @@ class Pedido(Base):
         nullable=False,
         index=True,
     )
-    
+    importe_iva = Column(Numeric(7,2),nullable=True)
+    total = Column(Numeric(8,2),nullable=True)
+    estado = Column(Enum(EstadoEnvioEnum),nullable=False,default=EstadoEnvioEnum.PENDIENTE)
+
+
+    __table_args__ = (
+        Index("idx_fecha", "fecha"),
+        Index("idx_usuario_fecha", "usuarios_id", "fecha"),
+    )

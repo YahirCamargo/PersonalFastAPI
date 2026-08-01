@@ -17,11 +17,7 @@ class Envio(Base):
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     fecha_entrega = Column(TIMESTAMP, nullable=True)
-    fecha = Column(
-        TIMESTAMP,
-        nullable=False,
-        server_default=func.now()
-    )
+    fecha = Column(TIMESTAMP, nullable=False, server_default=func.now())
     estado = Column(
         Enum(EstadoEnvioEnum, name="estado_envio_enum"),
         nullable=False,
@@ -39,7 +35,9 @@ class Envio(Base):
         nullable=False
     )
     activo = Column(Boolean, nullable=False, default=True)
+
+
     __table_args__ = (
-        Index("idx_envios_domicilios", "domicilios_id"),
-        Index("idx_envios_pedidos", "pedidos_id"),
+        Index("idx_estado", "estado"),
+        Index("idx_fecha_entrega", "fecha_entrega"),
     )

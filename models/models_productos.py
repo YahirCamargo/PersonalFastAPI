@@ -1,5 +1,5 @@
 import uuid
-from sqlalchemy import Column, Numeric,ForeignKey,String, Boolean
+from sqlalchemy import Column, Numeric,ForeignKey,String, Boolean, Index
 from sqlalchemy.dialects.postgresql import UUID,TEXT
 from db.database import Base
 
@@ -19,9 +19,17 @@ class Producto(Base):
     activo = Column(Boolean, nullable=False, default=True)
     categorias_id = Column(
         UUID(as_uuid=True),
-        ForeignKey("categorias.id"),
+        ForeignKey("categorias.id",onupdate="CASCADE"),
         index=True,
-        nullable=False
+        nullable=False,
     )
     url_producto = Column(String(255),nullable=False)
 
+
+    __table_args__ = (
+        Index("idx_marca", "marca"),
+        Index("idx_precio", "precio"),
+        Index("idx_nombre_desc_fulltext", "nombre", "descripcion"),
+    )
+
+    

@@ -20,6 +20,8 @@ class DetallePedido(Base):
         nullable=False
     )
     activo = Column(Boolean, nullable=False, default=True)
+
+
     __table_args__ = (
         CheckConstraint("cantidad > 0", name="chk_detalles_pedido_cantidad"),
         Index("idx_detalles_pedido_pedido_producto", "pedidos_id", "productos_id"),
