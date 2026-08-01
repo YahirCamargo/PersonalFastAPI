@@ -1,13 +1,8 @@
 import uuid
-from sqlalchemy import Column, DateTime, Numeric, func,ForeignKey,String,Boolean,Index
+from sqlalchemy import Column, DateTime, Numeric, func, ForeignKey, String, Boolean, Index, Enum
 from sqlalchemy.dialects.postgresql import UUID
 from db.database import Base
-from models.envios import EstadoEnvioEnum
-class EstadoEnvioEnum(enum.Enum):
-    PENDIENTE = "PENDIENTE"
-    EN_TRANSITO = "EN_TRANSITO"
-    ENTREGADO = "ENTREGADO"
-    CANCELADO = "CANCELADO"
+from models.models_envios import EstadoEnvioEnum
 
 class Pedido(Base):
     __tablename__ = "pedidos"

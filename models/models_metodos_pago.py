@@ -12,5 +12,5 @@ class MetodoPago(Base):
     
 
     __table_args__ = (
-        Index("idx_nombre", "nombre")
+        Index("idx_nombre", "nombre"),
     )
