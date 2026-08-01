@@ -20,21 +20,3 @@ class DetallePedidoResponder(DetallePedidoBase):
 
     class Config:
         from_attributes=True
-
-"""
-    id = Column(SMALLINT(unsigned=True),nullable=False,autoincrement=True,primary_key=True)
-    cantidad = Column(TINYINT(unsigned=True),nullable=False)
-    precio = Column(Numeric(7,2),nullable=False)
-    productos_id = Column(
-        SMALLINT(unsigned=True),
-        ForeignKey("productos.id",onupdate="CASCADE"),
-        nullable=False,
-        index=True
-    )
-    pedidos_id = Column(
-        SMALLINT(unsigned=True),
-        ForeignKey("pedidos.id",ondelete="CASCADE"),
-        nullable=False,
-        index=True
-    )
-"""

@@ -21,24 +21,3 @@ class DetalleCarritoResponder(DetalleCarritoBase):
 
     class Config:
         from_attributes=True
-    
-
-
-
-"""
- id = Column(SMALLINT(unsigned=True), primary_key=True, nullable=False, autoincrement=True)
-    cantidad = Column(TINYINT(unsigned=True), nullable=False, default=1)
-    precio = Column(Numeric(7,2), nullable=False)
-    productos_id = Column(
-        SMALLINT(unsigned=True),
-        ForeignKey("productos.id"),
-        nullable=False,
-        index=True
-    )
-    usuarios_id = Column(
-        SMALLINT(unsigned=True),
-        ForeignKey("usuarios.id"),
-        nulleable=False,
-        index=True
-    )
-"""

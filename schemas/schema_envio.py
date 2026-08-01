@@ -20,25 +20,3 @@ class EnviosResponder(EnvioBase):
     
     class Config:
         from_attributes = True
-
-
-
-"""
-    id = Column(SMALLINT(unsigned=True),nullable=False,autoincrement=True,primary_key=True)
-    fecha_entrega = Column(DATETIME(),nullable=True)
-    fecha = Column(DATETIME, nullable=False, server_default=func.now())
-    estado = Column(Enum(EstadoEnum),nullable=False,default='Pendiente')
-    numero_seguimiento = Column(String(20), nullable=False, unique=True)
-    domicilios_id = Column(
-        SMALLINT(unsigned=True),
-        ForeignKey("domicilios.id",ondelete="RESTRICT"),
-        index=True,
-        nullable=False
-    )
-    pedidos_id = Column(
-        SMALLINT(unsigned=True),
-        ForeignKey("pedidos.id",ondelete="CASCADE"),
-        index=True,
-        nullable=False
-    )
-"""
